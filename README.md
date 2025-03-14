@@ -2,8 +2,6 @@
 
 A feature-rich task management web application built with Flask, SQLAlchemy, and Semantic UI. This application allows users to create, manage, and organize their daily tasks with an intuitive dark-themed interface.
 
-![Flask Todo App]((https://www.shutterstock.com/image-vector/simple-contract-document-icons-line-260nw-1520706605.jpg))
-
 ## Features
 
 - Create and manage tasks
