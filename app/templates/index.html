@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/forms.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/cards.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="main-container">
+    {% include "partials/_form.html" %}
+    
+    {% if todo_list %}
+    <div class="task-list">
+        <div class="ui divided items">
+            {% for todo in todo_list %}
+                {% include "partials/_task.html" %}
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <div class="ui placeholder segment">
+        <div class="ui icon header">
+            <i class="check circle outline icon"></i>
+            No tasks found! Add your first task.
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    $(document).ready(function() {
+        $('.ui.dropdown').dropdown({
+            allowAdditions: false,
+            multiple: true,
+            forceSelection: false
+        });
+    });
+</script>
+{% endblock %}

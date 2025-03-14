@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.css">
+    <title>ToDo App</title>
+    {% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {% endblock %}
+</head>
+<body>
+    <div class="main-container">
+        <h1 class="ui center aligned header" style="margin-top: 3rem;">Todo App</h1>
+        <div class="ui menu">
+            <a href="/" class="item">Active Tasks</a>
+            <a href="/archive" class="item">Archive</a>
+            <a href="/about" class="item">About</a>
+        </div>
+        {% block content %}{% endblock %}
+    </div>
+
+    {% block scripts %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.js"></script>
+    {% endblock %}
+</body>
+</html>

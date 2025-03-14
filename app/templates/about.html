@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+{% endblock %}
+
+{% block content %}
+<div class="main-container">
+    <div class="ui centered raised very padded text container segment">
+        <div class="ui centered aligned container">
+            <img class="ui centered circular image" 
+                 src="{{ url_for('static', filename='images/itachi-itachi-uchiha.gif') }}" 
+                 alt="Ahmed Diaa Profile"
+                 style="width: 220px; height: 220px;">
+        </div>
+
+        <div class="ui text center aligned header">
+            <div class="content">
+                Ahmed Diaa
+                <div class="sub header">
+                    Full Stack Developer | Python Specialist
+                </div>
+            </div>
+        </div>
+
+        <div class="ui padded segment">
+            <h3 class="ui horizontal divider header">
+                <i class="user circle icon"></i>
+                About Me
+            </h3>
+            <p>
+                Software Dev | Mastering Python | 
+            </p>
+            <p>
+               Solving alot of real world Problems
+            </p>
+        </div>
+
+        <div class="ui stacked segments skills-grid">
+            <div class="ui segment">
+                <h3 class="ui horizontal divider header">
+                    <i class="code icon"></i>
+                    Technical Skills
+                </h3>
+                
+                <div class="ui three column grid">
+                    <div class="column">
+                        <div class="ui list">
+                            <div class="item">
+                                <i class="check circle icon"></i>
+                                <div class="content">Python</div>
+                            </div>
+                            <div class="item">
+                                <i class="check circle icon"></i>
+                                <div class="content">Flask</div>
+                            </div>
+                            <div class="item">
+                                <i class="check circle icon"></i>
+                                <div class="content">SQLAlchemy</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="ui list">
+                            <div class="item">
+                                <i class="check circle icon"></i>
+                                <div class="content">HTML/CSS</div>
+                            </div>
+                            <div class="item">
+                                <i class="check circle icon"></i>
+                                <div class="content">Django</div>
+                            </div>
+                            <div class="item">
+                                <i class="check circle icon"></i>
+                                <div class="content">Semantic UI</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="ui list">
+                            <div class="item">
+                                <i class="check circle icon"></i>
+                                <div class="content">Git</div>
+                            </div>
+                            <div class="item">
+                                <i class="check circle icon"></i>
+                                <div class="content">HTML</div>
+                            </div>
+                            <div class="item">
+                                <i class="check circle icon"></i>
+                                <div class="content">Databases</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ui segment">
+                <h3 class="ui horizontal divider header">
+                    <i class="briefcase icon"></i>
+                    Project Features
+                </h3>
+                <div class="ui bulleted list">
+                    <div class="item">Create, update, and delete tasks</div>
+                    <div class="item">Mark tasks as complete or incomplete</div>
+                    <div class="item">Archive completed tasks for better organization</div>
+                    <div class="item">Assign tasks to specific days of the week</div>
+                    <div class="item">Track task creation dates</div>
+                    <div class="item">Responsive design for mobile and desktop</div>
+                </div>
+            </div>
+            
+            <div class="ui segment">
+                <h3 class="ui horizontal divider header">
+                    <i class="envelope icon"></i>
+                    Contact Information
+                </h3>
+                <div class="ui relaxed divided list contact-list">
+                    <div class="item">
+                        <i class="large github middle aligned icon"></i>
+                        <div class="content">
+                            <a class="header">GitHub</a>
+                            <div class="description">https://github.com/AhmeDiaaU</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <i class="large linkedin middle aligned icon"></i>
+                        <div class="content">
+                            <a class="header">LinkedIn</a>
+                            <div class="description">https://www.linkedin.com/in/ahmed-diaa-76669b2b8/</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <i class="large envelope middle aligned icon"></i>
+                        <div class="content">
+                            <a class="header">Email</a>
+                            <div class="description">ahmeddeya58@gmail.com</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ui center aligned basic segment back-button">
+            <a class="ui labeled icon button primary" href="/">
+                <i class="arrow left icon"></i>
+                Back to App
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

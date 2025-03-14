@@ -1,0 +1,41 @@
+<div class="item task-card">
+    <div class="content">
+        <div class="task-header">
+            <div class="task-title">
+                {{ todo.title }}
+            </div>
+            <div class="created-date">
+                <i class="clock outline icon"></i> {{ todo.Created_at.strftime('%b %d, %Y') }}
+            </div>
+        </div>
+        
+        <div class="task-meta">
+            {% if todo.Days_of_week %}
+            <div class="ui horizontal label days-label">
+                <i class="calendar alternate outline icon"></i>
+                {{ todo.Days_of_week }}
+            </div>
+            {% endif %}
+            <div class="ui horizontal label status-label {% if todo.complete %}green{% else %}red{% endif %}">
+                {% if todo.complete %}
+                <i class="check icon"></i>
+                {% else %}
+                <i class="hourglass half icon"></i>
+                {% endif %}
+                {{ 'Completed' if todo.complete else 'Pending' }}
+            </div>
+        </div>
+        
+        <div class="task-actions">
+            <a href="/archive/{{ todo.id }}" class="ui icon button grey small">
+                <i class="archive icon"></i>
+            </a>
+            <a href="/update/{{ todo.id }}" class="ui icon button olive small">
+                <i class="{% if todo.complete %}undo{% else %}check{% endif %} icon"></i>
+            </a>
+            <a href="/delete/{{ todo.id }}" class="ui icon button red small">
+                <i class="trash icon"></i>
+            </a>
+        </div>
+    </div>
+</div>

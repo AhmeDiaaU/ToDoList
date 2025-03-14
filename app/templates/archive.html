@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/cards.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="main-container">
+    <h2 class="ui header archive-header">
+        <i class="archive icon"></i>
+        Archived Tasks
+    </h2>
+
+    {% if archived_tasks %}
+    <div class="task-list">
+        <div class="ui divided items">
+            {% for todo in archived_tasks %}
+                {% include "partials/_task.html" %}
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <div class="ui placeholder segment">
+        <div class="ui icon header">
+            <i class="archive outline icon"></i>
+            No archived tasks yet!
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
