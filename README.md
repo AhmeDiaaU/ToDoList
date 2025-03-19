@@ -105,10 +105,10 @@ flask-todo/
 ## Application Screenshots
 
 ### Active Tasks
-![Active Tasks](https://github.com/AhmeDiaaU/FlaskTodo/raw/main/static/images/active-tasks.png)
+![Active Tasks](https://github.com/AhmeDiaaU/ToDoList/blob/main/app/static/images/active-tasks.png)
 
 ### Archived Tasks
-![Archived Tasks](https://github.com/AhmeDiaaU/FlaskTodo/raw/main/static/images/archived-tasks.png)
+![Archived Tasks](https://github.com/AhmeDiaaU/ToDoList/blob/main/app/static/images/archived-tasks.png)
 
 ## Developer
 
