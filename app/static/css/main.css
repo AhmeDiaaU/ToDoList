@@ -1,5 +1,7 @@
 body {
-    background-color: #000; 
+    background: #200122; 
+    background: -webkit-linear-gradient(to right, #200122, #6f0000); 
+    background: linear-gradient(to right, #200122, #6f0000); 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #fff; 
 }
@@ -24,7 +26,7 @@ body {
 }
 
 .ui.menu .item:hover {
-    background-color: #2610ca; 
+    background-color: #333333; 
     color: #fff;
 }
 
@@ -49,7 +51,7 @@ body {
 }
 
 .ui.label.green {
-    background-color: #2e7d32 !important; 
+    background-color: #f10095 !important; 
     color: #e5f9e7 !important;
 }
 

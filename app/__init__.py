@@ -1,12 +1,17 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from app.config import Config  
+from flask_mysqldb import MySQL
+import re, hashlib
 
 app = Flask(__name__)
-app.config.from_object(Config)
+app.secret_key = 'your secret key'
 
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+# MySQL configuration
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = 'admin'
+app.config['MYSQL_DB'] = 'todo'
+
+# Initialize MySQL
+mysql = MySQL(app)
 
 from app import routes

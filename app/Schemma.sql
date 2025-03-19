@@ -1,0 +1,18 @@
+Create DATABASE todo;
+USE todo;
+Create TABLE tasks (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    complete BOOLEAN DEFAULT FALSE,
+    archived BOOLEAN DEFAULT FALSE,
+    Days_of_week VARCHAR(100),
+    Created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE accounts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) NOT NULL,
+    password VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL
+);
