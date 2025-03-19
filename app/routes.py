@@ -9,7 +9,7 @@ def index():
     if "loggedin" in session:
         # Fetch non-archived tasks from the database
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM tasks WHERE archived = FALSE')
+        cursor.execute('SELECT * FROM tasks WHERE archived = FALSE and user_id = %s', (session['id'],)) # get the archived tasks from the session user_id 
         todo_list = cursor.fetchall()
         return render_template('index.html', username=session['username'], todo_list=todo_list)
     return redirect('/login')
@@ -19,10 +19,11 @@ def add():
     """Add a new task"""
     title = request.form.get("title")
     days = request.form.get("days", "")
+    user_id = session['id'] # get the user id from the session loged in 
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute(
-        'INSERT INTO tasks (title, Days_of_week, complete, archived) VALUES (%s, %s, %s, %s)',
-        (title, days, False, False)
+        'INSERT INTO tasks (title, Days_of_week, complete, archived , user_id) VALUES (%s, %s, %s, %s,%s)',
+        (title, days, False, False,user_id)
     )
     mysql.connection.commit()
     return redirect(request.referrer)
@@ -30,8 +31,9 @@ def add():
 @app.route("/update/<int:todo_id>")
 def update(todo_id):
     """Toggle task completion status"""
+    user_id = session['id']
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('SELECT * FROM tasks WHERE id = %s', (todo_id,))
+    cursor.execute('SELECT * FROM tasks WHERE id = %s and user_id = %s', (todo_id,user_id ,))
     todo = cursor.fetchone()
     if todo:
         new_status = not todo['complete']
