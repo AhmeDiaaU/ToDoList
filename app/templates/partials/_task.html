@@ -1,41 +1,34 @@
-<div class="item task-card">
+<div class="item task-card ui card fade-in" role="listitem" aria-label="Task: {{ todo.title }}">
     <div class="content">
         <div class="task-header">
-            <div class="task-title">
-                {{ todo.title }}
+            <div class="task-title-wrapper">
+                <span class="task-title bold-title">{{ todo.title }}</span>
+                <time class="created-date" datetime="{{ todo.Created_at.strftime('%Y-%m-%d') }}">
+                    <i class="clock outline icon"></i> {{ todo.Created_at.strftime('%d %b %Y') }}
+                </time>
             </div>
-            <div class="created-date">
-                <i class="clock outline icon"></i> {{ todo.Created_at.strftime('%d %b, %Y') }}
+            <div class="task-actions">
+                <button class="ui icon button grey" onclick="location.href='/archive/{{ todo.id }}'" aria-label="Archive">
+                    <i class="archive icon"></i>
+                </button>
+                <button class="ui icon button olive" onclick="location.href='/update/{{ todo.id }}'" aria-label="Toggle Status">
+                    <i class="{{ 'undo' if todo.complete else 'check' }} icon"></i>
+                </button>
+                <button class="ui icon button red" onclick="location.href='/delete/{{ todo.id }}'" aria-label="Delete">
+                    <i class="trash icon"></i>
+                </button>
             </div>
         </div>
-        
         <div class="task-meta">
             {% if todo.Days_of_week %}
-            <div class="ui horizontal label days-label">
-                <i class="calendar alternate outline icon"></i>
-                {{ todo.Days_of_week }}
-            </div>
+                <span class="ui label">
+                    <i class="calendar alternate outline icon"></i> {{ todo.Days_of_week }}
+                </span>
             {% endif %}
-            <div class="ui horizontal label status-label {% if todo.complete %}green{% else %}red{% endif %}">
-                {% if todo.complete %}
-                <i class="check icon"></i>
-                {% else %}
-                <i class="hourglass half icon"></i>
-                {% endif %}
+            <span class="ui label {{ 'green' if todo.complete else 'red' }}">
+                <i class="{{ 'check' if todo.complete else 'hourglass half' }} icon"></i>
                 {{ 'Completed' if todo.complete else 'Pending' }}
-            </div>
-        </div>
-        
-        <div class="task-actions">
-            <a href="/archive/{{ todo.id }}" class="ui icon button grey small">
-                <i class="archive icon"></i>
-            </a>
-            <a href="/update/{{ todo.id }}" class="ui icon button olive small">
-                <i class="{% if todo.complete %}undo{% else %}check{% endif %} icon"></i>
-            </a>
-            <a href="/delete/{{ todo.id }}" class="ui icon button red small">
-                <i class="trash icon"></i>
-            </a>
+            </span>
         </div>
     </div>
 </div>
