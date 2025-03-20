@@ -1,132 +1,92 @@
-# Flask Todo Application
+# ToDoList Project
 
-A feature-rich task management web application built with Flask, SQLAlchemy, and Semantic UI. This application allows users to create, manage, and organize their daily tasks with an intuitive dark-themed interface.
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg?style=for-the-badge&logo=github&logoColor=white) ![HTML](https://img.shields.io/badge/HTML-39.9%25-orange.svg?style=for-the-badge&logo=html5&logoColor=white) ![CSS](https://img.shields.io/badge/CSS-31.2%25-blue.svg?style=for-the-badge&logo=css3&logoColor=white) ![Python](https://img.shields.io/badge/Python-27.6%25-yellow.svg?style=for-the-badge&logo=python&logoColor=white) ![Mako](https://img.shields.io/badge/Mako-1.3%25-green.svg?style=for-the-badge&logo=mako&logoColor=white)
 
-## Features
+The **ToDoList** project is a web-based application designed to help users manage their daily tasks efficiently. Built with Flask (Python), HTML, CSS, and Mako templates, it provides a responsive, user-friendly interface for task management, with data stored in a MySQL database.
 
-- Create and manage tasks
-- Mark tasks as complete/incomplete
-- Archive completed tasks for better organization
-- Assign tasks to specific days of the week
-- Track task creation dates
-- View archived tasks separately
-- Responsive design with dark theme
-- About page with developer information
+## 🚀 Features
 
-## Technology Stack
+- Add new tasks with categories and days of the week
+- Update task completion status (mark as complete/incomplete)
+- Delete tasks
+- Archive and unarchive tasks
+- Categorize tasks and view them by category
+- User authentication (register, login, logout)
+- Responsive design with a dark red-black theme
 
-- **Backend**: Python, Flask
-- **Database**: SQLite with SQLAlchemy ORM
-- **Frontend**: HTML, CSS, JavaScript
-- **UI Framework**: Semantic UI
-- **Template Engine**: Jinja2
+## 🛠️ How It Works
 
-## Project Structure
+- **Add Task:** Users can add a task via a modal, specifying the title, days of the week, and category.
+- **Update Task Status:** Toggle a task’s completion status with a button.
+- **Delete Task:** Remove a task permanently from the list.
+- **Archive Task:** Move a task to the archive; unarchive it later if needed.
+- **Categorize Tasks:** Assign tasks to categories and view them grouped by category.
+- **User Authentication:** Register and log in to manage personal tasks securely.
+- **Responsive UI:** The app adapts to different screen sizes with a consistent dark theme.
 
-```
-flask-todo/
-├── app/
-│   ├── __init__.py
-│   ├── models.py
-│   └── routes.py
-├── static/
-│   ├── css/
-│   │   ├── about.css
-│   │   ├── cards.css
-│   │   ├── forms.css
-│   │   └── main.css
-│   └── images/
-├── templates/
-│   ├── about.html
-│   ├── archive.html
-│   ├── base.html
-│   ├── index.html
-│   └── partials/
-│       ├── _form.html
-│       └── _task.html
-├── about.py
-├── config.py
-└── README.md
-```
+## 📜 Commands
 
-## Installation
+| Command          | Description                     | Example                          |
+|------------------|---------------------------------|----------------------------------|
+| `Add Task`       | Add a new task via modal        | `Add Task: "Finish report" (Mon, Wed), Category: Work` |
+| `Toggle Status`  | Mark a task as complete/incomplete | `Toggle Status: Finish report`   |
+| `Delete Task`    | Remove a task                   | `Delete Task: Finish report`     |
+| `Archive Task`   | Archive a task                  | `Archive Task: Finish report`    |
+| `Unarchive Task` | Restore an archived task        | `Unarchive Task: Finish report`  |
+| `Add Category`   | Add a new category              | `Add Category: Personal`         |
+| `View Categories`| View tasks grouped by category  | `View Categories`                |
 
-1. Clone the repository:
-   ```
-   git clone https://github.com/AhmeDiaaU/FlaskTodo.git
-   cd FlaskTodo
-   ```
+## 💻 Code Highlights
 
-2. Create and activate a virtual environment:
-   ```
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
+### Key Routes
 
-3. Install dependencies:
-   ```
-   pip install flask flask-sqlalchemy
-   ```
+| Route/Method          | Description                              |
+|-----------------------|------------------------------------------|
+| `/add`                | Adds a new task to the database          |
+| `/update/<int:todo_id>` | Toggles a task’s completion status       |
+| `/delete/<int:todo_id>` | Deletes a task by its ID                 |
+| `/archive/<int:todo_id>`| Archives a task by its ID                |
+| `/unarchive/<int:todo_id>` | Unarchives a task by its ID           |
+| `/category/add`       | Adds a new category                      |
+| `/categories`         | Displays tasks grouped by category       |
+| `/login/register`     | Registers a new user                     |
+| `/login/`             | Handles user login                       |
+| `/login/logout`       | Logs out the current user                |
 
-4. Initialize the database:
-   ```
-   python
-   >>> from app import db
-   >>> db.create_all()
-   >>> exit()
-   ```
+## 📂 Project Structure
 
-5. Run the application:
-   ```
-   python run.py
-   ```
+- **Flask Application (`app/`):**
+  - `routes.py`: Defines all routes and logic for task management, user authentication, and category handling.
+  - `app.py`: Initializes the Flask app and MySQL connection.
+- **Templates (`templates/`):**
+  - `base.html`: Base template with navigation and layout.
+  - `index.html`: Displays active tasks grouped by category.
+  - `archive.html`: Shows archived tasks.
+  - `categories.html`: Displays tasks by category.
+  - `about.html`: About page with project details.
+  - `login.html` & `register.html`: User authentication pages.
+  - `partials/_task.html`: Reusable task card component.
+- **Static Files (`static/`):**
+  - `css/`: Stylesheets (`main.css`, `cards.css`, `forms.css`, `about.css`) for the dark red-black theme.
+  - `images/`: Profile image for the about page.
+- **Database:** MySQL database with tables for tasks, categories, task-category relationships, and user accounts.
 
-6. Open your browser and navigate to:
-   ```
-   http://localhost:5000
-   ```
+## 📚 Future Enhancements
 
-## Usage
+- **Due Dates:** Add functionality to set and track due dates for tasks.
+- **Task Prioritization:** Allow users to assign priority levels to tasks.
+- **Notifications:** Implement email or in-app reminders for upcoming tasks.
+- **Task Search:** Add a search feature to find tasks by title or category.
+- **Task Sorting:** Enable sorting tasks by creation date, status, or category.
+- **User Profiles:** Allow users to update their profile information.
 
-### Adding Tasks
-1. Enter a task title in the input field
-2. Optionally select days of the week for the task
-3. Click the "Add Task" button
+## 📧 Contact
 
-### Managing Tasks
-- Click the checkmark icon to mark a task as complete
-- Click the archive icon to move a task to the archive
-- Click the trash icon to delete a task permanently
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/ahmed-diaa-76669b2b8/)  
+[![GitHub](https://img.shields.io/badge/GitHub-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/AhmeDiaaU)
 
-### Viewing Archives
-- Click on "Archive" in the navigation menu to view archived tasks
-- Archived tasks can be unarchived or deleted
+---
 
-## Application Screenshots
-
-### Active Tasks
-![Active Tasks](https://github.com/AhmeDiaaU/ToDoList/blob/main/app/static/images/active-tasks.png)
-
-### Archived Tasks
-![Archived Tasks](https://github.com/AhmeDiaaU/ToDoList/blob/main/app/static/images/archived-tasks.png)
-
-## Developer
-
-**Ahmed Diaa**
-- GitHub: [AhmeDiaaU](https://github.com/AhmeDiaaU)
-- LinkedIn: [Ahmed Diaa](https://www.linkedin.com/in/ahmed-diaa-76669b2b8/)
-- Email: ahmeddeya58@gmail.com
-
-## License
-
-This project is licensed under the MIT License.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+**Ahmed Diaa**  
+**Faculty of Computers and Artificial Intelligence**  
+**Assiut National University**
