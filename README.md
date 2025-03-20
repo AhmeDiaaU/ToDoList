@@ -86,6 +86,10 @@ The **ToDoList** project is a web-based application designed to help users manag
 [![GitHub](https://img.shields.io/badge/GitHub-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/AhmeDiaaU)
 
 ---
+## 📑Example of using it 
+![image]([https://github.com/user-attachments/assets/24695150-7a3e-4952-9a09-6c94332b173f](https://github.com/AhmeDiaaU/ToDoList/blob/v2/app/static/images/Screenshot%202025-03-20%20095911.png?raw=true))
+
+---
 
 **Ahmed Diaa**  
 **Faculty of Computers and Artificial Intelligence**  
