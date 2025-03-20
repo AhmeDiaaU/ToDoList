@@ -1,31 +1,71 @@
-<form class="ui form toDo-form" action="/add" method="POST">
-    <div class="ui action input fluid">
-        <input type="text" name="title" placeholder="Enter new task..." required>
-        <div class="ui fluid multiple selection dropdown mini" style="width: 220px;">
-            <input type="hidden" name="days">
-            <i class="dropdown icon"></i>
-            <div class="default text">Select Days</div>
-            <div class="menu" style="max-height: 150px; overflow-y: auto;">
-                {% for day in ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] %}
-                <div class="item" data-value="{{ day }}" style="padding: 7px 10px !important; font-size: 0.9em;">
-                    {{ day }}
+<form class="ui form toDo-form" action="/add" method="POST" role="form" aria-label="Add New Task">
+    <div class="ui action input fluid stackable grid">
+        <div class="ten wide column">
+            <input type="text" name="title" placeholder="Enter new task..." required aria-label="Task Title">
+        </div>
+        <div class="three wide column">
+            <div class="ui fluid multiple selection dropdown mini days" aria-label="Select Days">
+                <input type="hidden" name="days">
+                <i class="dropdown icon"></i>
+                <span class="default text">Days</span>
+                <div class="menu">
+                    {% for day in ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] %}
+                        <div class="item" data-value="{{ day }}">{{ day }}</div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
             </div>
         </div>
-        
-        <style>
-            .ui.dropdown.mini {
-                font-size: 0.9rem;
-                padding: 6px 8px;
-            }
-            .ui.dropdown.mini .menu {
-                width: 220px !important;
-            }
-        </style>
-        
-        <button class="ui primary button" type="submit">
-            <i class="plus circle icon"></i> Add Task
-        </button>
+        <div class="three wide column">
+            <div class="ui fluid selection dropdown mini category" aria-label="Select or Add Category">
+                <input type="hidden" name="category_id">
+                <i class="dropdown icon"></i>
+                <span class="default text">Category (type to add)</span>
+                <div class="menu">
+                    {% for category in categories %}
+                        <div class="item" data-<form class="ui form toDo-form" action="/add" method="POST" role="form" aria-label="Add New Task">
+                            <div class="ui action input fluid stackable grid">
+                                <div class="ten wide column">
+                                    <input type="text" name="title" placeholder="Enter new task..." required aria-label="Task Title">
+                                </div>
+                                <div class="three wide column">
+                                    <div class="ui fluid multiple selection dropdown mini days" aria-label="Select Days">
+                                        <input type="hidden" name="days">
+                                        <i class="dropdown icon"></i>
+                                        <span class="default text">Days</span>
+                                        <div class="menu">
+                                            {% for day in ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] %}
+                                                <div class="item" data-value="{{ day }}">{{ day }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="three wide column">
+                                    <div class="ui fluid selection dropdown mini category" aria-label="Select or Add Category">
+                                        <input type="hidden" name="category_id">
+                                        <i class="dropdown icon"></i>
+                                        <span class="default text">Category</span>
+                                        <div class="menu">
+                                            {% for category in categories %}
+                                                <div class="item" data-value="{{ category.category_id }}">{{ category.category_name }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="two wide column">
+                                    <button class="ui primary button fluid" type="submit" aria-label="Add Task">
+                                        <i class="plus circle icon"></i> Add
+                                    </button>
+                                </div>
+                            </div>
+                        </form>="{{ category.category_id }}">{{ category.category_name }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="two wide column">
+            <button class="ui primary button fluid" type="submit" aria-label="Add Task">
+                <i class="plus circle icon"></i> Add
+            </button>
+        </div>
     </div>
 </form>

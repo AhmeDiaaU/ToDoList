@@ -1,31 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    {% block head %}{% endblock %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Todo App - Manage your tasks efficiently">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.css">
-    <title>{% block title %}{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;800&display=swap" rel="stylesheet">
+    <title>{% block title %}{% endblock %} - Todo App</title>
     {% block styles %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     {% endblock %}
 </head>
 <body>
-    <div class="main-container">
-        <div class="ui menu">
+    <header class="ui fixed menu">
+        <div class="ui container">
             <a href="/" class="item">Active Tasks</a>
             <a href="/archive" class="item">Archive</a>
+            
             <div class="right menu">
                 <a href="/about" class="item">About</a>
                 <a href="/login/logout" class="item">Logout</a>
-            </div>        
+            </div>
         </div>
+    </header>
+
+    <main class="main-container ui container" role="main">
         {% block content %}{% endblock %}
-    </div>
+    </main>
 
     {% block scripts %}
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.js"></script>
     {% endblock %}
 </body>
 </html>

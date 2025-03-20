@@ -1,33 +1,114 @@
 {% extends "base.html" %}
 
-{% block title %}Active Tasks - Todo App{% endblock %}
+{% block title %}Active Tasks{% endblock %}
 
 {% block styles %}
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/forms.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/cards.css') }}">
+<style>
+    .task-section { padding: 2rem 0; }
+    .category-block { margin-bottom: 2rem; background: linear-gradient(145deg, #1e1e1e, #2a2a2a); }
+    .category-header { margin-bottom: 1rem; }
+    .form-actions { display: flex; gap: 1rem; margin: 1rem 0; }
+    .fade-in { animation: fadeIn 0.6s ease-out; }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="main-container">
-    {% include "partials/_form.html" %}
-    
-    {% if todo_list %}
-    <div class="task-list">
-        <div class="ui divided items">
-            {% for todo in todo_list %}
-                {% include "partials/_task.html" %}
+<section class="form-section ui segment" aria-labelledby="task-actions-header">
+    <h1 class="ui header" id="task-actions-header">
+        <i class="tasks icon"></i> Your Tasks
+    </h1>
+    <div class="form-actions">
+        <button class="ui primary button" onclick="$('#task-modal').modal('show');">
+            <i class="plus icon"></i> Add Task
+        </button>
+        <button class="ui button" onclick="$('#category-modal').modal('show');">
+            <i class="tag icon"></i> Add Category
+        </button>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="ui {{ category }} message fade-in" role="alert">{{ message }}</div>
             {% endfor %}
-        </div>
-    </div>
+        {% endif %}
+    {% endwith %}
+</section>
+
+<section class="task-section" aria-label="Active Tasks">
+    {% if categorized_tasks %}
+        {% for category_name, tasks in categorized_tasks.items() %}
+            <article class="category-block ui segment fade-in" aria-labelledby="category-{{ loop.index }}">
+                <h2 class="category-header ui header" id="category-{{ loop.index }}">
+                    <i class="tag icon"></i> {{ category_name }}
+                    <span class="ui small grey text">({{ tasks|length }} task{{ 's' if tasks|length != 1 else '' }})</span>
+                </h2>
+                <div class="ui relaxed divided items" role="list">
+                    {% for todo in tasks %}
+                        {% include "partials/_task.html" %}
+                    {% endfor %}
+                </div>
+            </article>
+        {% endfor %}
     {% else %}
-    <div class="ui placeholder segment">
-        <div class="ui icon header">
-            <i class="check circle outline icon"></i>
-            No tasks found! Add your first task.
+        <div class="ui placeholder segment fade-in">
+            <div class="ui icon header">
+                <i class="check circle outline icon"></i>
+                No tasks yet. Add one above!
+            </div>
         </div>
-    </div>
     {% endif %}
+</section>
+
+<!-- Task Modal -->
+<div class="ui modal" id="task-modal">
+    <div class="header">Add New Task</div>
+    <div class="content">
+        <form action="/add" method="POST" class="ui form">
+            <div class="field">
+                <label>Title</label>
+                <input type="text" name="title" placeholder="Task title" required>
+            </div>
+            <div class="field">
+                <label>Days</label>
+                <select class="ui fluid dropdown days" name="days" multiple required>
+                    {% for day in ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] %}
+                        <option value="{{ day }}">{{ day }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="field">
+                <label>Category</label>
+                <select class="ui fluid dropdown category" name="category_id" required>
+                    {% for category in categories %}
+                        <option value="{{ category.category_id }}">{{ category.category_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button class="ui primary button" type="submit">Add Task</button>
+            <button class="ui button" type="button" onclick="$('#task-modal').modal('hide');">Cancel</button>
+        </form>
+    </div>
+</div>
+
+<!-- Category Modal -->
+<div class="ui mini modal" id="category-modal">
+    <div class="header">New Category</div>
+    <div class="content">
+        <form action="/category/add" method="POST" class="ui form">
+            <div class="field">
+                <input type="text" name="new_category" placeholder="Category Name" required aria-label="New Category Name">
+            </div>
+            <button class="ui primary button" type="submit">Add</button>
+            <button class="ui button" type="button" onclick="$('#category-modal').modal('hide');">Cancel</button>
+        </form>
+    </div>
 </div>
 {% endblock %}
 
@@ -35,11 +116,11 @@
 {{ super() }}
 <script>
     $(document).ready(function() {
-        $('.ui.dropdown').dropdown({
-            allowAdditions: false,
-            multiple: true,
-            forceSelection: false
-        });
+        $('.ui.dropdown.days').dropdown();
+        $('.ui.dropdown.category').dropdown();
+        $('#task-modal').modal({ onShow: function() { $(this).find('input:first').focus(); } });
+        $('#category-modal').modal({ onShow: function() { $(this).find('input').focus(); } });
+        setTimeout(() => $('.ui.message').fadeOut(500), 3000);
     });
 </script>
 {% endblock %}

@@ -1,153 +1,77 @@
 {% extends "base.html" %}
 
-{% block title %}About - Todo App{% endblock %}
+{% block title %}About{% endblock %}
 
 {% block styles %}
+{{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<style>
+    .about-section { padding: 2rem 0; }
+    .profile-img { border: 4px solid #3498db; transition: transform 0.3s ease; }
+    .profile-img:hover { transform: scale(1.05); }
+    .skills-grid { margin-top: 1.5rem; }
+    .fade-in { animation: fadeIn 0.6s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="main-container">
-    <div class="ui centered raised very padded text container segment">
-        <div class="ui centered aligned container">
-            <img class="ui centered circular image" 
+<section class="about-section ui segment fade-in">
+    <h1 class="ui centered header">
+        <i class="user circle icon"></i> About Me
+    </h1>
+    <div class="ui centered grid">
+        <div class="sixteen wide mobile eight wide tablet six wide computer column">
+            <img class="ui centered circular image profile-img" 
                  src="{{ url_for('static', filename='images/itachi-itachi-uchiha.gif') }}" 
-                 alt="Ahmed Diaa Profile"
-                 style="width: 220px; height: 220px;">
-        </div>
-
-        <div class="ui text center aligned header">
-            <div class="content">
-                Ahmed Diaa
-                <div class="sub header">
-                    Full Stack Developer | Python Specialist
-                </div>
-            </div>
-        </div>
-
-        <div class="ui padded segment">
-            <h3 class="ui horizontal divider header">
-                <i class="user circle icon"></i>
-                About Me
-            </h3>
-            <p>
-                Software Dev | Mastering Python | 
-                Solving alot of real world Problems
-            </p>
-        </div>
-
-        <div class="ui stacked segments skills-grid">
-            <div class="ui segment">
-                <h3 class="ui horizontal divider header">
-                    <i class="code icon"></i>
-                    Technical Skills
-                </h3>
-                
-                <div class="ui three column grid">
-                    <div class="column">
-                        <div class="ui list">
-                            <div class="item">
-                                <i class="check circle icon"></i>
-                                <div class="content">Python</div>
-                            </div>
-                            <div class="item">
-                                <i class="check circle icon"></i>
-                                <div class="content">Flask</div>
-                            </div>
-                            <div class="item">
-                                <i class="check circle icon"></i>
-                                <div class="content">SQLAlchemy</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="column">
-                        <div class="ui list">
-                            <div class="item">
-                                <i class="check circle icon"></i>
-                                <div class="content">HTML/CSS</div>
-                            </div>
-                            <div class="item">
-                                <i class="check circle icon"></i>
-                                <div class="content">Django</div>
-                            </div>
-                            <div class="item">
-                                <i class="check circle icon"></i>
-                                <div class="content">Semantic UI</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="column">
-                        <div class="ui list">
-                            <div class="item">
-                                <i class="check circle icon"></i>
-                                <div class="content">Git</div>
-                            </div>
-                            <div class="item">
-                                <i class="check circle icon"></i>
-                                <div class="content">JavaScript</div>
-                            </div>
-                            <div class="item">
-                                <i class="check circle icon"></i>
-                                <div class="content">Databases</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="ui segment">
-                <h3 class="ui horizontal divider header">
-                    <i class="briefcase icon"></i>
-                    Project Features
-                </h3>
-                <div class="ui bulleted list">
-                    <div class="item">Create, update, and delete tasks</div>
-                    <div class="item">Mark tasks as complete or incomplete</div>
-                    <div class="item">Archive completed tasks for better organization</div>
-                    <div class="item">Assign tasks to specific days of the week</div>
-                    <div class="item">Track task creation dates</div>
-                    <div class="item">Responsive design for mobile and desktop</div>
-                </div>
-            </div>
-            
-            <div class="ui segment">
-                <h3 class="ui horizontal divider header">
-                    <i class="envelope icon"></i>
-                    Contact Information
-                </h3>
-                <div class="ui relaxed divided list contact-list">
-                    <div class="item">
-                        <i class="large github middle aligned icon"></i>
-                        <div class="content">
-                            <a class="header">GitHub</a>
-                            <div class="description">https://github.com/AhmeDiaaU</div>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <i class="large linkedin middle aligned icon"></i>
-                        <div class="content">
-                            <a class="header">LinkedIn</a>
-                            <div class="description">https://www.linkedin.com/in/ahmed-diaa-76669b2b8/</div>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <i class="large envelope middle aligned icon"></i>
-                        <div class="content">
-                            <a class="header">Email</a>
-                            <div class="description">ahmeddeya58@gmail.com</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="ui center aligned basic segment back-button">
-            <a class="ui labeled icon button primary" href="/">
-                <i class="arrow left icon"></i>
-                Back to App
-            </a>
+                 alt="Ahmed Diaa Profile">
         </div>
     </div>
-</div>
+    <div class="ui center aligned header">
+        Ahmed Diaa
+        <div class="sub header">Full Stack Developer | Python Specialist</div>
+    </div>
+    <p class="ui text center aligned">
+        Software Dev | Mastering Python | Solving real-world problems
+    </p>
+
+    <div class="ui stacked segments skills-grid">
+        <div class="ui segment">
+            <h3 class="ui horizontal divider header">
+                <i class="code icon"></i> Technical Skills
+            </h3>
+            <div class="ui three column grid">
+                <div class="column"><ul class="ui list"><li>Python</li><li>Flask</li><li>SQLAlchemy</li></ul></div>
+                <div class="column"><ul class="ui list"><li>HTML/CSS</li><li>Django</li><li>Semantic UI</li></ul></div>
+                <div class="column"><ul class="ui list"><li>Git</li><li>JavaScript</li><li>Databases</li></ul></div>
+            </div>
+        </div>
+        <div class="ui segment">
+            <h3 class="ui horizontal divider header">
+                <i class="briefcase icon"></i> Project Features
+            </h3>
+            <ul class="ui bulleted list">
+                <li>Create, update, and delete tasks</li>
+                <li>Mark tasks as complete or incomplete</li>
+                <li>Archive completed tasks</li>
+                <li>Assign tasks to days and categories</li>
+                <li>Track task creation dates</li>
+                <li>Responsive design</li>
+            </ul>
+        </div>
+        <div class="ui segment">
+            <h3 class="ui horizontal divider header">
+                <i class="envelope icon"></i> Contact
+            </h3>
+            <div class="ui relaxed list">
+                <div class="item"><i class="github icon"></i> <a href="https://github.com/AhmeDiaaU">GitHub</a></div>
+                <div class="item"><i class="linkedin icon"></i> <a href="https://www.linkedin.com/in/ahmed-diaa-76669b2b8/">LinkedIn</a></div>
+                <div class="item"><i class="envelope icon"></i> <a href="mailto:ahmeddeya58@gmail.com">Email</a></div>
+            </div>
+        </div>
+    </div>
+    <div class="ui center aligned segment">
+        <a class="ui primary button" href="/"><i class="arrow left icon"></i> Back to App</a>
+    </div>
+</section>
 {% endblock %}
