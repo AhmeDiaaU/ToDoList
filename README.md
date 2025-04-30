@@ -55,6 +55,23 @@ The **ToDoList** project is a web-based application designed to help users manag
 | `/login/`             | Handles user login                       |
 | `/login/logout`       | Logs out the current user                |
 
+## 🐳 Docker Setup
+
+You can get started quickly by cloning the Dockerized version of the project from GitHub:
+
+![Docker Image](/home/ahmed/ToDoList/app/static/images/docker.png)
+
+### 📦 Steps to Run
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/AhmeDiaaU/ToDoList.git
+   cd ToDoList
+
+### Run application by : 
+  - sudo docker compose up
+
+  
 ## 📂 Project Structure
 
 - **Flask Application (`app/`):**
