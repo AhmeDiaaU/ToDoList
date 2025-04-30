@@ -1,0 +1,34 @@
+services:
+  app:
+    build: .
+    ports:
+      - 5000:5000
+    volumes:
+      - .:/app
+    environment:
+      FLASK_DEBUG: 1
+      SQLALCHEMY_DATABASE_URI: "mysql+pymysql://admin:test@db:3306/todo"
+    command: flask run --host=0.0.0.0
+    depends_on:
+      - db
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: test
+      MYSQL_DATABASE: todo
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./Schema.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - 3306:3306
+  adminer:
+    image: adminer
+    ports:
+      - 8000:8080
+    depends_on:
+      - db
+
+volumes:
+  mysql-data:
