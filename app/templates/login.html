@@ -1,33 +1,64 @@
-{% extends "info.html" %}
+{% extends "base.html" %}
 
-{% block title %}
-    <h1>Login Page</h1>
-{% endblock %}
-{% block head %}
-<meta charset="utf-8">
-<title>Login</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+{% block title %}Login{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
 {% endblock %}
 
 {% block content %}
- 		<div class="login">
-			<h1>Login</h1>
-			<div class="links">
-				<a href="{{ url_for('login') }}" class="active">Login</a>
-				<a href="/login/register">Register</a>
-			</div>
-			<form action="{{ url_for('login') }}" method="post">
-				<label for="username">
-					<i class="fas fa-user"></i>
-				</label>
-				<input type="text" name="username" placeholder="Username" id="username" required>
-				<label for="password">
-					<i class="fas fa-lock"></i>
-				</label>
-				<input type="password" name="password" placeholder="Password" id="password" required>
-				<div class="msg">{{ msg }}</div>
-				<input type="submit" value="Login">
-			</form>
-		</div>
+<div class="register-container">
+    <div class="register-card">
+        <div class="register-header">
+            <h1>Welcome Back</h1>
+            <p>Login to access your tasks</p>
+        </div>
+        
+        <div class="register-tabs">
+            <a href="{{ url_for('login') }}" class="tab active">Sign In</a>
+            <a href="{{ url_for('register') }}" class="tab">Register</a>
+        </div>
+        
+        <form action="{{ url_for('login') }}" method="post" autocomplete="off" class="register-form">
+            <div class="input-group">
+                <label for="email">
+                    <i class="fas fa-envelope"></i>
+                </label>
+                <input type="email" name="email" placeholder="Email Address" id="email" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="password">
+                    <i class="fas fa-lock"></i>
+                </label>
+                <input type="password" name="password" placeholder="Password" id="password" required>
+            </div>
+            
+            <div class="remember-forgot">
+                <div class="remember-me">
+                    <input type="checkbox" name="remember" id="remember">
+                    <label for="remember">Remember me</label>
+                </div>
+                <a href="#" class="forgot-password">Forgot Password?</a>
+            </div>
+            
+            {% if msg %}
+            <div class="message {{ 'error' if 'Incorrect' in msg or 'Error' in msg else 'success' }}">
+                {{ msg }}
+            </div>
+            {% endif %}
+            
+            <button type="submit" class="register-button">
+                Sign In
+                <i class="fas fa-sign-in-alt"></i>
+            </button>
+        </form>
+        
+        <div class="register-footer">
+            <p>Don't have an account? <a href="{{ url_for('register') }}">Register</a></p>
+        </div>
+    </div>
+</div>
 {% endblock %}

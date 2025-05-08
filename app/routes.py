@@ -337,22 +337,22 @@ def about():
 @app.route("/login/", methods=["POST", "GET"])
 def login():
     msg = ''
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
-        username = request.form['username']
+    if request.method == 'POST' and 'email' in request.form and 'password' in request.form:
+        email = request.form['email']
         password = request.form['password']
 
         hash = password + app.secret_key
         hash = hashlib.sha1(hash.encode())
         password = hash.hexdigest()
         
-        print(f"Username: {username}, Password: {password}")
+        print(f"Username: {email}, Password: {password}")
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM accounts WHERE username = %s AND password = %s', (username, password))
+        cursor.execute('SELECT * FROM accounts WHERE email = %s AND password = %s', (email, password))
         account = cursor.fetchone()
         if account:
             session['loggedin'] = True
             session['id'] = account['id']
-            session['username'] = account['username']
+            session['email'] = account['email']
             msg = 'Logged in successfully!'
             return redirect("/")
         else:
