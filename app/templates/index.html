@@ -12,6 +12,7 @@
     .category-header { margin-bottom: 1rem; }
     .form-actions { display: flex; gap: 1rem; margin: 1rem 0; }
     .fade-in { animation: fadeIn 0.6s ease-out; }
+    .hidden { display: none; }
     @keyframes fadeIn {
         from { opacity: 0; transform: translateY(15px); }
         to { opacity: 1; transform: translateY(0); }
@@ -42,16 +43,20 @@
 </section>
 
 <section class="task-section" aria-label="Active Tasks">
-    {% if categorized_tasks %}
-        {% for category_name, tasks in categorized_tasks.items() %}
+    {% if categories_with_tasks %}
+        {% for category in categories_with_tasks %}
             <article class="category-block ui segment fade-in" aria-labelledby="category-{{ loop.index }}">
                 <h2 class="category-header ui header" id="category-{{ loop.index }}">
-                    <i class="tag icon"></i> {{ category_name }}
-                    <span class="ui small grey text">({{ tasks|length }} task{{ 's' if tasks|length != 1 else '' }})</span>
+                    <i class="tag icon"></i> {{ category.category_name }}
+                    <span class="ui small grey text">
+                        ({{ category.tasks|length }} task{{ 's' if category.tasks|length != 1 else '' }})
+                    </span>
                 </h2>
                 <div class="ui relaxed divided items" role="list">
-                    {% for todo in tasks %}
+                    {% for task in category.tasks %}
                         {% include "partials/_task.html" %}
+                    {% else %}
+                        <div class="ui message">No tasks in this category.</div>
                     {% endfor %}
                 </div>
             </article>
@@ -66,18 +71,18 @@
     {% endif %}
 </section>
 
-<!-- Task Modal -->
 <div class="ui modal" id="task-modal">
     <div class="header">Add New Task</div>
     <div class="content">
-        <form action="/add" method="POST" class="ui form">
+        <form action="{{ url_for('add') }}" method="POST" class="ui form">
             <div class="field">
                 <label>Title</label>
                 <input type="text" name="title" placeholder="Task title" required>
             </div>
             <div class="field">
                 <label>Days</label>
-                <select class="ui fluid dropdown days" name="days" multiple required>
+                <select class="ui fluid dropdown days" name="days" required>
+                    <option value="" disabled selected>Select Days</option>
                     {% for day in ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] %}
                         <option value="{{ day }}">{{ day }}</option>
                     {% endfor %}
@@ -86,18 +91,42 @@
             <div class="field">
                 <label>Category</label>
                 <select class="ui fluid dropdown category" name="category_id" required>
+                    <option value="" disabled selected>Select Category</option>
                     {% for category in categories %}
                         <option value="{{ category.category_id }}">{{ category.category_name }}</option>
                     {% endfor %}
                 </select>
             </div>
-            <button class="ui primary button" type="submit">Add Task</button>
-            <button class="ui button" type="button" onclick="$('#task-modal').modal('hide');">Cancel</button>
+            <div class="field">
+                <label>End Time</label>
+                <input type="time" name="end_time" value="13:30" class="ui input" required>
+            </div>
+            <div class="field">
+                <label>Repeat</label>
+                <select class="ui fluid dropdown" name="r_task" id="repeat-task" required>
+                    <option value="" disabled selected>Select Repeat</option>
+                    {% for state in ["Yes", "No"] %}
+                        <option value="{{ 'true' if state == 'Yes' else 'false' }}">{{ state }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="field" id="repeat-period-field">
+                <label>Every?</label>
+                <select class="ui fluid dropdown r_period" name="r_period" id="r_period" required>
+                    <option value="" disabled selected>Select Period</option>
+                    {% for period in ["Daily", "Weekly", "Monthly"] %}
+                        <option value="{{ period }}">{{ period }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-actions">
+                <button class="ui primary button" type="submit">Add Task</button>
+                <button class="ui button" type="button" onclick="$('#task-modal').modal('hide');">Cancel</button>
+            </div>
         </form>
     </div>
 </div>
 
-<!-- Category Modal -->
 <div class="ui mini modal" id="category-modal">
     <div class="header">New Category</div>
     <div class="content">
@@ -115,12 +144,29 @@
 {% block scripts %}
 {{ super() }}
 <script>
-    $(document).ready(function() {
-        $('.ui.dropdown.days').dropdown();
-        $('.ui.dropdown.category').dropdown();
-        $('#task-modal').modal({ onShow: function() { $(this).find('input:first').focus(); } });
-        $('#category-modal').modal({ onShow: function() { $(this).find('input').focus(); } });
-        setTimeout(() => $('.ui.message').fadeOut(500), 3000);
-    });
+document.addEventListener('DOMContentLoaded', function() {
+    const repeatTaskSelect = document.querySelector('[name="r_task"]');
+    const repeatPeriodField = document.getElementById('repeat-period-field');
+    const repeatPeriodSelect = document.querySelector('[name="r_period"]');
+
+    function updateRepeatFields() {
+        if (repeatTaskSelect && repeatTaskSelect.value === 'true') {
+            repeatPeriodField.classList.remove('hidden');
+            repeatPeriodSelect.setAttribute('required', '');
+        } else {
+            repeatPeriodField.classList.add('hidden');
+            repeatPeriodSelect.removeAttribute('required');
+            repeatPeriodSelect.selectedIndex = 0;
+        }
+    }
+
+    // Initial setup
+    updateRepeatFields();
+
+    // Add event listener
+    if (repeatTaskSelect) {
+        repeatTaskSelect.addEventListener('change', updateRepeatFields);
+    }
+});
 </script>
 {% endblock %}

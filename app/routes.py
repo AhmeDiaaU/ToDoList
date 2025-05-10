@@ -3,111 +3,108 @@ from app import app, mysql
 import MySQLdb.cursors
 import re
 import hashlib
-from datetime import datetime
+from datetime import datetime, timedelta
 
 @app.route('/')
 def index():
     if "loggedin" in session:
         query = '''
-            SELECT t.*, c.category_id, c.category_name
+            SELECT t.*, c.category_id, c.category_name, ts.day_of_week, ts.start_time, ts.end_time
             FROM tasks t
-            LEFT JOIN task_category tc ON t.id = tc.task_id
-            LEFT JOIN category c ON tc.category_id = c.category_id
+            LEFT JOIN category c ON t.c_id = c.category_id
+            LEFT JOIN tasks_Schedule ts ON t.id = ts.task_id
             WHERE t.archived = FALSE AND t.user_id = %s
             ORDER BY c.category_name, t.title
         '''
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute(query, (session['id'],))
         tasks = cursor.fetchall()
-        # Fetch non-archived tasks from the database
-        cursor.execute('SELECT * FROM tasks WHERE archived = FALSE and user_id = %s', (session['id'],)) # get the archived tasks from the session user_id 
-        todo_list = cursor.fetchall()
-        cursor.execute('SELECT * FROM category') # get the categories from the database
+        cursor.execute('SELECT * FROM category')
         categories = cursor.fetchall()
-        # Organize tasks by category
-        categorized_tasks = {}
-        for task in tasks:
-            category_name = task['category_name'] if task['category_name'] else 'Uncategorized'
-            if category_name not in categorized_tasks:
-                categorized_tasks[category_name] = []
-            categorized_tasks[category_name].append(task)
-        return render_template('index.html', username=session['username'], todo_list=todo_list,categories=categories,categorized_tasks=categorized_tasks)
+        cursor.close()
+
+        # Group tasks by category_id
+        categories_with_tasks = []
+        for category in categories:
+            cat_tasks = [task for task in tasks if task['category_id'] == category['category_id']]
+            for task in cat_tasks:
+                if task['end_time']:
+                    try:
+                        task['end_time'] = datetime.strptime(str(task['end_time']), '%H:%M:%S').strftime('%I:%M %p')
+                    except ValueError:
+                        app.logger.error(f"Error parsing time: {task['end_time']}")
+                        task['end_time'] = None
+            categories_with_tasks.append({
+                'category_id': category['category_id'],
+                'category_name': category['category_name'],
+                'tasks': cat_tasks
+            })
+        return render_template('index.html', email=session['email'], categories_with_tasks=categories_with_tasks)
     return redirect('/login')
-
-
-
-
-
-
 
 @app.route("/add", methods=["POST"])
 def add():
-    """Add a new task
-    1- get form data from user
-    2-validate form data
-    3-insertion to db
-    4- ensure its linked to the db 
-    - validate it
-    """
+    days = {
+        "mon": "Monday",
+        "tue": "Tuesday",
+        "wed": "Wednesday",
+        "thu": "Thursday",
+        "fri": "Friday",
+        "sat": "Saturday",
+        "sun": "Sunday"
+    }
     try:
         # Get form data
         title = request.form.get("title")
-        days = ",".join(request.form.getlist("days"))
+        days_abrv = request.form.get("days")
         category_id = request.form.get("category_id")
+        created_at = datetime.now()
+        end_at = request.form.get("end_time")
+        repeat_task = request.form.get("r_task") == "true"
+        repeat_interval = request.form.get("r_period") if repeat_task else None
 
-        # Validate all form data at once
-        if not all([title, days, category_id]):
-            if not title:
-                flash("Task title is required.", "error")
-            if not days:
-                flash("Days of the week are required.", "error")
-            if not category_id:
-                flash("Category is required.", "error")
+        # Validate form data
+        if not all([title, days_abrv, category_id, end_at]):
+            flash("All fields are required.", "error")
             return redirect(url_for("index"))
-
         # Database operations
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         try:
             # Insert task
             cursor.execute(
-                'INSERT INTO tasks(title, Days_of_week, complete, archived, user_id) VALUES (%s, %s, %s, %s, %s)',
-                (title, days, False, False, session['id'])
+                'INSERT INTO tasks (title, Created_at, complete, archived, user_id, c_id) VALUES (%s, %s, %s, %s, %s, %s)',
+                (title, created_at, False, False, session['id'], category_id)
             )
-            
-            # Link task to category
             task_id = cursor.lastrowid
+
+            # Insert task schedule for each day
+            days_abrv = days_abrv.lower()
+            day_full = days[days_abrv]
             cursor.execute(
-                'INSERT INTO task_category(task_id, category_id) VALUES(%s, %s)',
-                (task_id, category_id)
-            )
-            print(f"Task {task_id} linked to category {category_id}")
+                    'INSERT INTO tasks_Schedule (task_id, day_of_week, end_time, repeat_task, repeat_interval) '
+                    'VALUES (%s, %s, %s, %s, %s)',
+                    (task_id, day_full, end_at, repeat_task, repeat_interval)
+             )
+
             mysql.connection.commit()
             flash("Task added successfully.", "success")
-            
+
         except MySQLdb.Error as db_error:
             mysql.connection.rollback()
-            raise db_error
+            app.logger.error(f"Database error: {db_error}")
+            flash("An error occurred while adding the task. Please try again later.", "error")
+            return redirect(url_for("index"))
 
         return redirect(url_for("index"))
 
-    except MySQLdb.Error as db_error: # handle database errors
-        app.logger.error(f"Database error: {db_error}")
-        flash("An error occurred while adding the task. Please try again later.", "error")
-        return redirect(url_for("index"))
-        
-    except Exception as e: # handle any other unexpected errors like type or value errors
+    except Exception as e:
         app.logger.error(f"Unexpected error: {e}")
         flash("An unexpected error occurred. Please try again later.", "error")
         return redirect(url_for("index"))
-        
+
     finally:
-        if 'cursor' in locals(): # check if the cursor is open and close it
-            cursor.close() # close the cursor
-
-
-
-
-
+        if 'cursor' in locals():
+            cursor.close()
 
 @app.route("/update/<int:todo_id>")
 def update(todo_id):
@@ -116,16 +113,11 @@ def update(todo_id):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM tasks WHERE id = %s and user_id = %s', (todo_id,user_id ,))
     todo = cursor.fetchone()
-    print(todo)
     if todo:
         new_status = not todo['complete']
         cursor.execute('UPDATE tasks SET complete = %s WHERE id = %s and user_id = %s', (new_status, todo_id , user_id))    
         mysql.connection.commit()
     return redirect(request.referrer)
-
-
-
-
 
 @app.route("/delete/<int:todo_id>")
 def delete(todo_id):
@@ -134,13 +126,6 @@ def delete(todo_id):
     cursor.execute('DELETE FROM tasks WHERE id = %s', (todo_id,))
     mysql.connection.commit()
     return redirect(request.referrer)
-
-
-
-
-
-
-
 
 @app.route("/archive/<int:todo_id>")
 def archive(todo_id):
@@ -156,6 +141,13 @@ def view_archived():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM tasks WHERE archived = TRUE')
     archived_tasks = cursor.fetchall()
+    for task in archived_tasks:
+        if task['end_time']:
+            try:
+                task['end_time'] = datetime.strptime(str(task['end_time']), '%H:%M:%S').strftime('%I:%M %p')
+            except ValueError:
+                app.logger.error(f"Error parsing time: {task['end_time']}")
+                task['end_time'] = None
     return render_template("archive.html", archived_tasks=archived_tasks)
 
 @app.route("/unarchive/<int:todo_id>")
@@ -166,95 +158,7 @@ def unarchived_task(todo_id):
     mysql.connection.commit()
     return redirect(url_for("view_archived"))
 
-@app.route("/categories")
-def view_categories():
-    """View all categories and their tasks"""
-    try:
-         # Debug: Print session data
-        print(f"Session data: {session}")
-
-        # Check if the user is logged in
-        if "loggedin" not in session:
-            print("User not logged in. Redirecting to /login.")
-            flash("You need to log in to view categories.", "error")
-            return redirect('/login')
-
-        # Validate session['id'] (ensure it's a valid integer)
-        if not isinstance(session.get('id'), int):
-            print(f"Invalid session ID: {session.get('id')}. Redirecting to /login.")
-            flash("Invalid user session. Please log in again.", "error")
-            return redirect('/login')
-        
-        # Create a database cursor
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-
-        # Execute the query to fetch categories and tasks
-        query = '''
-            SELECT c.*, 
-                   GROUP_CONCAT(t.id) as task_ids,
-                   GROUP_CONCAT(t.title) as task_titles,
-                   GROUP_CONCAT(t.complete) as task_completes,
-                   GROUP_CONCAT(t.Created_at) as task_dates,
-                   GROUP_CONCAT(t.Days_of_week) as task_days
-            FROM category c
-            LEFT JOIN task_category tc ON c.category_id = tc.category_id
-            LEFT JOIN tasks t ON tc.task_id = t.id AND t.user_id = %s
-            GROUP BY c.category_id
-        '''
-        print(f"Executing query: {query} with user_id={session['id']}")
-
-        cursor.execute(query, (session['id'],))
-
-        # Fetch all categories result as list of dicts
-        categories = cursor.fetchall()
-
-        # Process the results to create a nested structure
-        for category in categories:
-            if category['task_ids']:
-                task_ids = category['task_ids'].split(',')
-                task_titles = category['task_titles'].split(',')
-                task_completes = category['task_completes'].split(',')
-                task_dates = category['task_dates'].split(',')
-                task_days = category['task_days'].split(',')
-
-                category['tasks'] = []
-                for i in range(len(task_ids)):
-                    try:
-                        task = {
-                            'id': int(task_ids[i]),
-                            'title': task_titles[i],
-                            'complete': bool(int(task_completes[i])),
-                            'Created_at': datetime.strptime(task_dates[i], '%Y-%m-%d %H:%M:%S'),
-                            'Days_of_week': task_days[i] if task_days[i] != 'None' else None
-                        }
-                        category['tasks'].append(task)
-                    except (ValueError, IndexError) as e:
-                        # Log the error and skip invalid task data
-                        app.logger.error(f"Error processing task data: {e}")
-                        continue
-            else:
-                category['tasks'] = []
-
-        return render_template('categories.html', categories=categories)
-
-    except MySQLdb.Error as db_error:
-        # Handle database errors
-        app.logger.error(f"Database error: {db_error}")
-        flash("An error occurred while fetching data. Please try again later.", "error")
-        return redirect('/')
-
-    except Exception as e:
-        # Handle any other unexpected errors
-        app.logger.error(f"Unexpected error: {e}")
-        flash("An unexpected error occurred. Please try again later.", "error")
-        return redirect('/')
-
-    finally:
-        # Ensure the cursor is closed
-        if 'cursor' in locals():
-            cursor.close()
-
-@app.route('/category/add' , methods=[ 'POST'])
+@app.route('/category/add', methods=['POST'])
 def add_category():
     """
     add a new category by sending name from form to the database
@@ -262,20 +166,20 @@ def add_category():
         
     """
     try:
-        if 'loggedin' not in session: # make sure user must log in to use this didnt expire
+        if 'loggedin' not in session:
             flash("You need to log in to view categories.", "error")
             return redirect('/login')
         
-        if not isinstance(session.get('id'), int): # make sure the user id is valid
+        if not isinstance(session.get('id'), int):
             flash("Invalid user session. Please log in again.", "error")
             return redirect('/login')
         
-        category_name = request.form.get('new_category') # get the name from the form
-        if not category_name: # make sure the name is not empty
+        category_name = request.form.get('new_category')
+        if not category_name:
             flash("Category name is required.", "error")    
         
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM category WHERE category_name = %s', (category_name,)) # check if the category already exists
+        cursor.execute('SELECT * FROM category WHERE category_name = %s', (category_name,))
         if cursor.fetchone():
             flash("Category already exists.", "error")
         else:
@@ -299,40 +203,53 @@ def logout():
 @app.route('/login/register', methods=['GET', 'POST'])
 def register():
     msg = ''
-
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and request.form and 'date_of_birth' in request.form and 'first_name' in request.form and 'last_name' in request.form:
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
-        #must be hashed before entering the database
+        birthdate = request.form['date_of_birth']
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+
         hash = password + app.secret_key
         hash = hashlib.sha1(hash.encode())
         password = hash.hexdigest()
 
+        def validate_birthdate(birthdate):
+            try:
+                birthdate = datetime.strptime(birthdate, '%Y-%m-%d').date()
+                return birthdate < datetime.now().date() - timedelta(days=365 * 12)
+            except ValueError:
+                return False
+              
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM accounts WHERE LOWER(username) = LOWER(%s) ', (username,))
+        cursor.execute('SELECT * FROM accounts WHERE LOWER(email) = LOWER(%s) ', (email,))
         account = cursor.fetchone()
         if account:
             msg = 'Account already exists!'
-        elif not re.match(r'[^@]+@[^@]+\.[^@]+', email): #handle double input 
+        elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
             msg = 'Invalid email address!'
-        elif not re.match(r'[A-Za-z0-9]+', username): # handel username input
+        elif not re.match(r'[A-Za-z0-9]+', username):
             msg = 'Username must contain only characters and numbers!'
-        elif not username or not password or not email:
+        elif not username or not password or not email or not birthdate or not first_name or not last_name:
             msg = 'Please fill out the form!'
+        elif not validate_birthdate(birthdate):
+            msg = 'Invalid birthdate!'
+
         else:
-            cursor.execute('INSERT INTO accounts VALUES (NULL,%s,%s,%s)',(username , password , email))
+            cursor.execute('insert into user(username) values (%s)', (username,))
+            user_id = cursor.lastrowid
+            cursor.execute('INSERT INTO accounts(password, email, user_id) VALUES (%s,%s,%s)', (password, email, user_id))
+            cursor.execute('INSERT INTO user_profile(date_of_birth, first_name, last_name, user_id) values (%s,%s,%s,%s)', (birthdate, first_name, last_name, user_id))
             mysql.connection.commit()
             msg = 'You have successfully registered!'
-    elif request.method== 'POST':
-        msg='Please Fill out the Form'
-    return render_template("register.html" , msg=msg)
-
+    elif request.method == 'POST':
+        msg = 'Please Fill out the Form'
+    return render_template("register.html", msg=msg)
 
 @app.route("/about")
 def about():
     return render_template("about.html")
-
 
 @app.route("/login/", methods=["POST", "GET"])
 def login():
@@ -345,7 +262,6 @@ def login():
         hash = hashlib.sha1(hash.encode())
         password = hash.hexdigest()
         
-        print(f"Username: {email}, Password: {password}")
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM accounts WHERE email = %s AND password = %s', (email, password))
         account = cursor.fetchone()
@@ -356,5 +272,5 @@ def login():
             msg = 'Logged in successfully!'
             return redirect("/")
         else:
-            msg = 'Incorrect username / password!'
+            msg = 'Incorrect email / password!'
     return render_template('login.html', msg=msg)

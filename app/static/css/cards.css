@@ -1,22 +1,22 @@
 .task-card.ui.card {
     margin: 1rem 0;
     border-radius: 10px;
-    border-left: 5px solid #6f0000;
-    background: linear-gradient(145deg, #1a1a1a, #252525);
-    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.08);
+    border-left: 5px solid #60a5fa;
+    background: linear-gradient(145deg, #0f172a, #1e3a5f);
+    box-shadow: 0 5px 15px rgba(96, 165, 250, 0.1);
     transition: all 0.3s ease;
     color: #fff;
 }
 
 .task-card.ui.card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.15);
-    border-left-color: #ff3333;
+    box-shadow: 0 8px 20px rgba(96, 165, 250, 0.15);
+    border-left-color: #3b82f6;
 }
 
 .task-header {
     padding: 1rem 1.5rem;
-    border-bottom: 1px solid #3a3a3a;
+    border-bottom: 1px solid #1a365d;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -42,14 +42,14 @@
 
 .created-date {
     font-size: 0.9rem;
-    color: #b3b3b3;
+    color: #a0aec0;
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
 .created-date i.icon {
-    color: #ff6666;
+    color: #60a5fa;
     font-size: 1rem;
     margin: 0;
 }
@@ -62,7 +62,7 @@
 }
 
 .ui.label {
-    background: #2c2c2c;
+    background: #1f293a;
     color: #fff;
     padding: 0.5rem 0.75rem;
     border-radius: 4px;
@@ -78,12 +78,35 @@
 }
 
 .ui.label.red {
-    background: #6f0000 !important;
+    background: #e74c3c !important;
     color: #fff;
 }
 
+.ui.label.timer {
+    background: #1f293a;
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+.ui.label.timer:hover {
+    background: #1e3a5f;
+    transform: scale(1.02);
+}
+
+.ui.label.timer.active {
+    background: #3498db !important;
+    color: #fff;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
 .ui.label i.icon {
-    color: #ff6666;
+    color: #60a5fa;
     font-size: 1rem;
     margin: 0;
 }
@@ -98,7 +121,7 @@
     padding: 0.6rem;
     border-radius: 6px;
     transition: all 0.2s ease;
-    background: #2c2c2c;
+    background: #1f293a;
     color: #fff;
     display: flex;
     align-items: center;
@@ -109,35 +132,29 @@
 
 .task-actions .ui.button:hover {
     transform: scale(1.05);
-    background: #ff3333;
-}
-
-.task-actions .ui.button i.icon {
-    color: #ff6666;
-    font-size: 1.1rem;
-    margin: 0;
+    background: #3b82f6;
 }
 
 .task-actions .ui.button.grey {
-    background: #3a3a3a;
+    background: #1e3a5f;
 }
 
 .task-actions .ui.button.grey:hover {
-    background: #ff6666;
+    background: #60a5fa;
 }
 
 .task-actions .ui.button.olive {
-    background: #b58900;
+    background: #2ecc71;
 }
 
 .task-actions .ui.button.olive:hover {
-    background: #ffcc00;
+    background: #27ae60;
 }
 
 .task-actions .ui.button.red {
-    background: #6f0000;
+    background: #e74c3c;
 }
 
 .task-actions .ui.button.red:hover {
-    background: #ff3333;
+    background: #c0392b;
 }
