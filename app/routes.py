@@ -39,7 +39,7 @@ def index():
                 'category_name': category['category_name'],
                 'tasks': cat_tasks
             })
-        return render_template('index.html', email=session['email'], categories_with_tasks=categories_with_tasks)
+        return render_template('index.html', email=session['email'], categories_with_tasks=categories_with_tasks , categories=categories)
     return redirect('/login')
 
 @app.route("/add", methods=["POST"])
@@ -187,6 +187,25 @@ def add_category():
             mysql.connection.commit()
             flash("Category added successfully!", "success")
         mysql.connection.commit()
+        return redirect(url_for("index"))
+    except Exception as e:
+        app.logger.error(f"Unexpected error: {e}")
+        flash("An unexpected error occurred. Please try again later.", "error")
+        return redirect('/')
+
+@app.route('/category/delete/<int:category_id>', methods=['POST'])
+def delete_category(category_id):
+    """
+    delete category by sending id to the db and delete it 
+    """
+    try : 
+        if 'loggedin' in session : 
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('DELETE FROM category WHERE category_id = %s', (category_id,))
+            mysql.connection.commit()
+            flash("Category deleted successfully!", "success")
+        else :
+            flash("You need to log in to delete categories.", "error")
         return redirect(url_for("index"))
     except Exception as e:
         app.logger.error(f"Unexpected error: {e}")

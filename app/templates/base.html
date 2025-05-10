@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Todo App - Manage your tasks efficiently">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;800&display=swap" rel="stylesheet">
     <title>{% block title %}{% endblock %} - Todo App</title>
     {% block styles %}
@@ -14,12 +15,17 @@
 <body>
     <header class="ui fixed menu">
         <div class="ui container">
-            <a href="/" class="item">Active Tasks</a>
-            <a href="/archive" class="item">Archive</a>
-            
+            {% if session.loggedin %}
+            <a href="/" class="item"><i class="fa-solid fa-tasks"></i> Active Tasks</a>
+            <a href="/archive" class="item"><i class="fa-solid fa-box-archive"></i> Archive</a>
             <div class="right menu">
-                <a href="/about" class="item">About</a>
-                <a href="/login/logout" class="item">Logout</a>
+                <a href="/about" class="item"><i class="fa-solid fa-info-circle"></i> About</a>
+                    <a href="/login/logout" class="item"><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
+                {% else %}
+                <div class="right menu">
+                    <a href="/login" class="item"><i class="fa-solid fa-sign-in-alt"></i> Login</a>
+                </div>
+                {% endif %}
             </div>
         </div>
     </header>
@@ -32,5 +38,6 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.js"></script>
     {% endblock %}
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93da69ab89668bb7',t:'MTc0Njg5MDM0NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
