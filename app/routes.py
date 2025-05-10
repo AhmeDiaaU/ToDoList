@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 def index():
     if "loggedin" in session:
         query = '''
-            SELECT t.*, c.category_id, c.category_name, ts.day_of_week, ts.start_time, ts.end_time
+            SELECT t.*, c.category_id, c.category_name, ts.day_of_week, ts.end_time
             FROM tasks t
             LEFT JOIN category c ON t.c_id = c.category_id
             LEFT JOIN tasks_Schedule ts ON t.id = ts.task_id
