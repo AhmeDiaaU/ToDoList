@@ -141,13 +141,6 @@ def view_archived():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM tasks WHERE archived = TRUE')
     archived_tasks = cursor.fetchall()
-    for task in archived_tasks:
-        if task['end_time']:
-            try:
-                task['end_time'] = datetime.strptime(str(task['end_time']), '%H:%M:%S').strftime('%I:%M %p')
-            except ValueError:
-                app.logger.error(f"Error parsing time: {task['end_time']}")
-                task['end_time'] = None
     return render_template("archive.html", archived_tasks=archived_tasks)
 
 @app.route("/unarchive/<int:todo_id>")
@@ -293,3 +286,47 @@ def login():
         else:
             msg = 'Incorrect email / password!'
     return render_template('login.html', msg=msg)
+
+@app.route('/dashboard', methods=['GET'])
+def dashboard():
+    if "loggedin" in session:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        # total tasks
+        cursor.execute('SELECT COUNT(*) as active_tasks_count FROM tasks where user_id = %s AND complete = FALSE AND archived = FALSE' , (session['id'],))
+        active_tasks_count = cursor.fetchall()
+        active_tasks_count = active_tasks_count[0]['active_tasks_count'] if active_tasks_count else 0
+        print(active_tasks_count)
+        # completed tasks last month
+        cursor.execute('SELECT COUNT(*) as completed_tasks_count From tasks where user_id = %s AND complete = True AND Created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)',(session['id'],))
+        completed_tasks_last_month = cursor.fetchall()
+        completed_tasks_last_month = completed_tasks_last_month[0]['completed_tasks_count'] if completed_tasks_last_month else 0
+        print(completed_tasks_last_month)
+        # tasks completed last week 
+        cursor.execute('''
+            SELECT DATE(Created_at) as task_date, COUNT(*) as task_count 
+            FROM tasks 
+            WHERE user_id = %s AND Created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY) 
+            GROUP BY DATE(Created_at)
+            ORDER BY task_date
+        ''', (session['id'],))
+        completed_tasks_last_week = cursor.fetchall()
+        number_of_completed_tasks_last_week = completed_tasks_last_week[1]['task_count'] if completed_tasks_last_week else 0
+        print(completed_tasks_last_week)
+        # completed tasks today 
+        cursor.execute(
+        '''
+            SELECT DATE(Created_at) as task_date , COUNT(*) as task_count 
+            FROM tasks 
+            where user_id =%s AND Created_at >= DATE_SUB(NOW() , INTERVAL 1 DAY)
+            GROUP BY DATE(Created_at)
+            ORDER BY task_date
+          ''' ,(session['id'],))
+        completed_tasks_last_day = cursor.fetchall()
+        number_of_completed_tasks_last_day = completed_tasks_last_day[0]['task_count'] if completed_tasks_last_day else 0 
+        print(completed_tasks_last_day)
+        # username
+        cursor.execute('SELECT username FROM user where id = %s',(session['id'],))
+        username = cursor.fetchall()
+        username = username[0]['username'] if username else None
+        return render_template('dashboard.html',username = username ,email=session['email'] , active_tasks_count=active_tasks_count ,number_of_completed_tasks_last_day = number_of_completed_tasks_last_day   , completed_tasks_last_week=completed_tasks_last_week , completed_tasks_last_month=completed_tasks_last_month , completed_tasks_last_day =completed_tasks_last_day , number_of_completed_tasks_last_week = number_of_completed_tasks_last_week)
+    return redirect('/login')

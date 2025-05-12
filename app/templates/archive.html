@@ -19,7 +19,7 @@
     </h1>
     {% if archived_tasks %}
         <div class="ui relaxed divided items fade-in">
-            {% for todo in archived_tasks %}
+            {% for task in archived_tasks %}
                 {% include "partials/_task.html" %}
             {% endfor %}
         </div>

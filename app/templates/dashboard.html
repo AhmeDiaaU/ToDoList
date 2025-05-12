@@ -1,0 +1,95 @@
+{% extends "info.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+{% endblock %}
+
+{% block content %}
+<!-- Hidden data elements for JavaScript -->
+<script type="application/json" id="active-tasks-data">
+    {{ active_tasks_count|tojson }}
+</script>
+<script type="application/json" id="completed-last-month-data">
+    {{ completed_tasks_last_month|tojson }}
+</script>
+<script type="application/json" id="completed-last-week-data">
+    {{ completed_tasks_last_week|tojson }}
+</script>
+<script type="application/json" id="completed-last-day-data">
+    {{ number_of_completed_tasks_last_day|tojson }}
+</script>
+
+<div class="dashboard-container">
+
+    <main class="dashboard-main">
+            <div class="user-menu">
+                <span class="welcome-text">{{ username }}</span>
+                <div class="profile-icon">
+                    <i class="user circle icon"></i>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <h1 class="page-title">Task Analytics</h1>
+
+            <div class="stats-grid">
+                <div class="stat-card active-tasks">
+                    <div class="stat-icon"><i class="tasks icon"></i></div>
+                    <div class="stat-content">
+                        <h3>Active Tasks</h3>
+                        <p class="stat-number">{{ active_tasks_count }}</p>
+                    </div>
+                </div>
+                <div class="stat-card completed-tasks">
+                    <div class="stat-icon"><i class="check circle icon"></i></div>
+                    <div class="stat-content">
+                        <h3>Completed (30 Days)</h3>
+                        <p class="stat-number">{{ completed_tasks_last_month }}</p>
+                    </div>
+                </div>
+                <div class="stat-card completed-today">
+                    <div class="stat-icon"><i class="calendar check outline icon"></i></div>
+                    <div class="stat-content">
+                        <h3>Completed Today</h3>
+                        <p class="stat-number">{{ number_of_completed_tasks_last_day }}</p>
+                    </div>
+                </div>
+                <div class="stat-card completed-last-week">
+                    <div class="stat-icon"><i class="calendar alternate outline icon"></i></div>
+                    <div class="stat-content">
+                        <h3>Completed Last Week</h3>
+                        <p class="stat-number">{{ number_of_completed_tasks_last_week }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="charts-container">
+                <div class="chart-card">
+                    <h3>Tasks Completed Last Week</h3>
+                    <div class="chart-container">
+                        <canvas id="tasksLastWeekChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h3>Task Status Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="taskStatusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/dashboard_charts.js') }}"></script>
+{% endblock %}
