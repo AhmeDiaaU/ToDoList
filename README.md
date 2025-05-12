@@ -4,7 +4,7 @@
 
 The **ToDoList** project is a web-based application designed to help users manage their daily tasks efficiently. Built with Flask (Python), HTML, CSS, and Mako templates, it provides a responsive, user-friendly interface for task management, with data stored in a MySQL database.
 
-![ToDoList App Screenshot](https://github.com/AhmeDiaaU/ToDoList/blob/v2/app/static/images/Screenshot%202025-03-20%20095911.png?raw=true)
+![ToDoList App Screenshot]([https://github.com/AhmeDiaaU/ToDoList/blob/v2/app/static/images/Screenshot%202025-03-20%20095911.png?raw=true](https://github.com/AhmeDiaaU/ToDoList/blob/main/images/Screenshot%20from%202025-05-12%2005-50-12.png))
 
 ## 🚀 Features
 
@@ -54,6 +54,7 @@ The **ToDoList** project is a web-based application designed to help users manag
 | `/login/register`     | Registers a new user                     |
 | `/login/`             | Handles user login                       |
 | `/login/logout`       | Logs out the current user                |
+| `/dashboard`       | Dashboard tracking production                |
 
 ## 📂 Project Structure
 
@@ -68,18 +69,19 @@ The **ToDoList** project is a web-based application designed to help users manag
   - `about.html`: About page with project details.
   - `login.html` & `register.html`: User authentication pages.
   - `partials/_task.html`: Reusable task card component.
+  - `dashboard.html`: Tracking progress
 - **Static Files (`static/`):**
-  - `css/`: Stylesheets (`main.css`, `cards.css`, `forms.css`, `about.css`) for the dark red-black theme.
+  - `css/`: Stylesheets (`main.css`, `cards.css`, `forms.css`, `about.css` , `dashboard.css` ,`info.css` :) for the dark blue-black theme.
   - `images/`: Profile image for the about page.
 - **Database:** MySQL database with tables for tasks, categories, task-category relationships, and user accounts.
 
 ## 📚 Future Enhancements
 
-- **Due Dates:** Add functionality to set and track due dates for tasks.
+- **Due Dates:** Add functionality to set and track due dates for tasks.[x]
 - **Task Prioritization:** Allow users to assign priority levels to tasks.
 - **Notifications:** Implement email or in-app reminders for upcoming tasks.
 - **Task Search:** Add a search feature to find tasks by title or category.
-- **Task Sorting:** Enable sorting tasks by creation date, status, or category.
+- **Task Sorting:** Enable sorting tasks by creation date, status, or category.[x]
 - **User Profiles:** Allow users to update their profile information.
 
 ## 📧 Contact
