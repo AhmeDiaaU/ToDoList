@@ -4,8 +4,8 @@
 
 The **ToDoList** project is a web-based application designed to help users manage their daily tasks efficiently. Built with Flask (Python), HTML, CSS, and Mako templates, it provides a responsive, user-friendly interface for task management, with data stored in a MySQL database.
 
-![ToDoList App Screenshot](images/Screenshot from 2025-05-12 05-50-12.png)
-
+![ToDoList App Screenshot](https://github.com/AhmeDiaaU/ToDoList/blob/main/images/Screenshot%20from%202025-05-12%2005-50-12.png)
+![ToDoList App Screenshot](https://github.com/AhmeDiaaU/ToDoList/blob/main/images/Screenshot%20from%202025-05-12%2005-50-21.png)
 ## 🚀 Features
 
 - Add new tasks with categories and days of the week
