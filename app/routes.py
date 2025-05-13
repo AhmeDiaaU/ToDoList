@@ -305,19 +305,19 @@ def dashboard():
         cursor.execute('''
             SELECT DATE(Created_at) as task_date, COUNT(*) as task_count 
             FROM tasks 
-            WHERE user_id = %s AND Created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY) 
+            WHERE user_id = %s AND Created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY) AND complete = True 
             GROUP BY DATE(Created_at)
             ORDER BY task_date
         ''', (session['id'],))
         completed_tasks_last_week = cursor.fetchall()
-        number_of_completed_tasks_last_week = completed_tasks_last_week[1]['task_count'] if completed_tasks_last_week else 0
+        number_of_completed_tasks_last_week = completed_tasks_last_week[0]['task_count'] if completed_tasks_last_week else 0
         print(completed_tasks_last_week)
         # completed tasks today 
         cursor.execute(
         '''
             SELECT DATE(Created_at) as task_date , COUNT(*) as task_count 
             FROM tasks 
-            where user_id =%s AND Created_at >= DATE_SUB(NOW() , INTERVAL 1 DAY)
+            where user_id =%s AND Created_at >= DATE_SUB(NOW() , INTERVAL 1 DAY) AND complete = True 
             GROUP BY DATE(Created_at)
             ORDER BY task_date
           ''' ,(session['id'],))
