@@ -1,5 +1,4 @@
-Terminal close -- exit!
-XISTS todo;
+CREATE DATABASE IF NOT EXISTS todo;
 USE todo;
 
 CREATE TABLE user (
