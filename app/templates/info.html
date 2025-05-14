@@ -22,15 +22,15 @@
               </div>
               <nav class="sidebar-nav">
                   <ul>
-                      <li class="active"><a href="{{ url_for('dashboard') }}"><i class="tachometer alternate icon"></i> Dashboard</a></li>
-                      <li><a href="{{ url_for('index') }}"><i class="tasks icon"></i> Tasks</a></li>
-                      <li><a href="{{ url_for('view_archived') }}"><i class="archive icon"></i> Archive</a></li>
+                      <li class="active"><a href="{{ url_for('pages.dashboard') }}"><i class="tachometer alternate icon"></i> Dashboard</a></li>
+                      <li><a href="{{ url_for('pages.index') }}"><i class="tasks icon"></i> Tasks</a></li>
+                      <li><a href="{{ url_for('pages.view_archived') }}"><i class="archive icon"></i> Archive</a></li>
                       <li><a href="#"><i class="user icon"></i> Profile</a></li>
                       <li><a href="#"><i class="cog icon"></i> Settings</a></li>
                   </ul>
               </nav>
               <div class="sidebar-footer">
-                  <a href="{{ url_for('logout') }}" class="logout-btn"><i class="sign out alternate icon"></i> Logout</a>
+                  <a href="{{ url_for('auth.logout') }}" class="logout-btn"><i class="sign out alternate icon"></i> Logout</a>
               </div>
           </aside>
                 {% endif %}

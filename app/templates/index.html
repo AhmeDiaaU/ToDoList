@@ -53,7 +53,7 @@
                             ({{ category.tasks|length }} task{{ 's' if category.tasks|length != 1 else '' }})
                         </span>
                     </span>
-                    <form action="{{ url_for('delete_category', category_id=category.category_id) }}" method="POST" style="margin: 0;">
+                    <form action="{{ url_for('categories.delete_category', category_id=category.category_id) }}" method="POST" style="margin: 0;">
                         <button class="ui mini red button" type="submit" title="Delete Category" onclick="return confirm('Are you sure you want to delete this category? All its tasks will also be deleted.');">
                             <i class="trash icon"></i>
                         </button>
@@ -81,7 +81,7 @@
 <div class="ui modal" id="task-modal">
     <div class="header">Add New Task</div>
     <div class="content">
-        <form action="{{ url_for('add') }}" method="POST" class="ui form">
+        <form action="{{ url_for('tasks.add') }}" method="POST" class="ui form">
             <div class="field">
                 <label>Title</label>
                 <input type="text" name="title" placeholder="Task title" required>
@@ -137,7 +137,7 @@
 <div class="ui mini modal" id="category-modal">
     <div class="header">New Category</div>
     <div class="content">
-        <form action="/category/add" method="POST" class="ui form">
+        <form action="{{ url_for('categories.add_category') }}" method="POST" class="ui form">
             <div class="field">
                 <input type="text" name="new_category" placeholder="Category Name" required aria-label="New Category Name">
             </div>
@@ -151,29 +151,19 @@
 {% block scripts %}
 {{ super() }}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const repeatTaskSelect = document.querySelector('[name="r_task"]');
-    const repeatPeriodField = document.getElementById('repeat-period-field');
-    const repeatPeriodSelect = document.querySelector('[name="r_period"]');
-
-    function updateRepeatFields() {
-        if (repeatTaskSelect && repeatTaskSelect.value === 'true') {
-            repeatPeriodField.classList.remove('hidden');
-            repeatPeriodSelect.setAttribute('required', '');
-        } else {
-            repeatPeriodField.classList.add('hidden');
-            repeatPeriodSelect.removeAttribute('required');
-            repeatPeriodSelect.selectedIndex = 0;
-        }
-    }
-
-    // Initial setup
-    updateRepeatFields();
-
-    // Add event listener
-    if (repeatTaskSelect) {
-        repeatTaskSelect.addEventListener('change', updateRepeatFields);
-    }
-});
+    $(document).ready(function() {
+        $('.ui.dropdown').dropdown();
+        
+        $('#repeat-task').change(function() {
+            if ($(this).val() === 'true') {
+                $('#repeat-period-field').show();
+            } else {
+                $('#repeat-period-field').hide();
+            }
+        });
+        
+        // Initially hide the repeat period field
+        $('#repeat-period-field').hide();
+    });
 </script>
 {% endblock %}

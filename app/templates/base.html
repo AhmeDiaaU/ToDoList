@@ -16,15 +16,15 @@
     <header class="ui fixed menu">
         <div class="ui container">
             {% if session.loggedin %}
-            <a href="/" class="item"><i class="fa-solid fa-tasks"></i> Active Tasks</a>
-            <a href="/archive" class="item"><i class="fa-solid fa-box-archive"></i> Archive</a>
-            <a href="/dashboard" class="item"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+            <a href="{{ url_for('pages.index') }}" class="item"><i class="fa-solid fa-tasks"></i> Active Tasks</a>
+            <a href="{{ url_for('pages.view_archived') }}" class="item"><i class="fa-solid fa-box-archive"></i> Archive</a>
+            <a href="{{ url_for('pages.dashboard') }}" class="item"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
             <div class="right menu">
-                  <a href="/about" class="item"><i class="fa-solid fa-info-circle"></i> About</a>
-                    <a href="/login/logout" class="item"><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
+                  <a href="{{ url_for('pages.about') }}" class="item"><i class="fa-solid fa-info-circle"></i> About</a>
+                    <a href="{{ url_for('auth.logout') }}" class="item"><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
                 {% else %}
                 <div class="right menu">
-                    <a href="/login" class="item"><i class="fa-solid fa-sign-in-alt"></i> Login</a>
+                    <a href="{{ url_for('auth.login') }}" class="item"><i class="fa-solid fa-sign-in-alt"></i> Login</a>
                 </div>
                 {% endif %}
             </div>
